@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import {
+  AlertCircle,
   ArrowLeft,
   Check,
   CirclePlay,
@@ -370,7 +371,7 @@ function QuestionsPage() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{question.question || "Boş soru"}</span>
                       <span className="mt-0.5 block text-xs text-studio-muted">
-                        {question.option_a.trim() && question.option_b.trim() ? `Doğru yanıt: ${question.correct_answer.toUpperCase()}` : "Taslak — seçenekler eksik"}
+                        {question.option_a.trim() && question.option_b.trim() ? `Doğru yanıt: ${question.correct_answer.toUpperCase()}` : <span className="inline-flex items-center gap-1 text-destructive"><AlertCircle className="h-3.5 w-3.5" /> Taslak — seçenekler eksik</span>}
                       </span>
                     </span>
                   </Button>
