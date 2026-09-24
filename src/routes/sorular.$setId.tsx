@@ -141,9 +141,13 @@ function QuestionsPage() {
     setDraftMode(false);
   };
 
-  const newQuestion = () => {
+  const newQuestion = async () => {
     setError(null);
     setNotice(null);
+    if (JSON.stringify(form) !== lastSavedRef.current && form.question.trim()) {
+      await persist(form, true);
+    }
+    targetRef.current = { draft: true, id: null };
     setSelectedId(null);
     setDraftMode(true);
     setForm({ ...empty });
@@ -157,14 +161,18 @@ function QuestionsPage() {
     const b = snapshot.option_b.trim();
     const c = snapshot.option_c.trim();
     const d = snapshot.option_d.trim();
-    if (!question || !a || !b) {
-      if (!silent) setError(!question ? "Soru metni gerekli" : "İlk iki cevap (A ve B) zorunlu");
+    if (!question) {
+      if (!silent) setError("Soru metni gerekli");
       else setAutoStatus("Taslak — henüz kaydedilmedi");
       return false;
     }
+    if (!silent && (!a || !b)) {
+      setError("İlk iki cevap (A ve B) zorunlu");
+      return false;
+    }
     const filled: Record<string, string> = { A: a, B: b, C: c, D: d };
-    if (!filled[snapshot.correct_answer]) {
-      if (!silent) setError("Doğru cevap olarak dolu bir seçenek seçin");
+    if (!silent && !filled[snapshot.correct_answer]) {
+      setError("Doğru cevap olarak dolu bir seçenek seçin");
       return false;
     }
     if (silent) setAutoStatus("Kaydediliyor...");
@@ -326,7 +334,7 @@ function QuestionsPage() {
                 size="icon"
                 aria-label="Yeni soru ekle"
                 title="Yeni soru ekle"
-                onClick={newQuestion}
+                onClick={() => void newQuestion()}
                 className="h-10 w-10 shrink-0 rounded-lg bg-studio-yellow text-studio-bg hover:bg-studio-yellow/90"
               >
                 <Plus />
@@ -362,7 +370,7 @@ function QuestionsPage() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{question.question || "Boş soru"}</span>
                       <span className="mt-0.5 block text-xs text-studio-muted">
-                        Doğru yanıt: {question.correct_answer.toUpperCase()}
+                        {question.option_a.trim() && question.option_b.trim() ? `Doğru yanıt: ${question.correct_answer.toUpperCase()}` : "Taslak — seçenekler eksik"}
                       </span>
                     </span>
                   </Button>
@@ -372,7 +380,7 @@ function QuestionsPage() {
 
             <div className="border-t border-studio-line p-3">
               <Button
-                onClick={newQuestion}
+                onClick={() => void newQuestion()}
                 className={`h-11 w-full rounded-lg font-bold ${draftMode ? "bg-studio-yellow text-studio-bg" : "bg-studio-elevated text-studio-ink hover:bg-studio-line"}`}
               >
                 <Plus /> Yeni Soru

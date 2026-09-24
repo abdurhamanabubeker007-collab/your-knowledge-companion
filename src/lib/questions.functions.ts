@@ -147,8 +147,6 @@ function clean(data: QuestionInput): QuestionInput {
 
 function validate(d: QuestionInput) {
   if (!d.question) throw new Error("Soru metni gerekli");
-  if (!d.option_a || !d.option_b || !d.option_c || !d.option_d)
-    throw new Error("Dört seçeneğin tamamını doldurun");
   if (!["A", "B", "C", "D"].includes(d.correct_answer))
     throw new Error("Doğru cevap A, B, C veya D olmalı");
 }
