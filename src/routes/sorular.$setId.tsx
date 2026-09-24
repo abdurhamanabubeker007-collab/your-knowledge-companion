@@ -334,7 +334,7 @@ function QuestionsPage() {
                 size="icon"
                 aria-label="Yeni soru ekle"
                 title="Yeni soru ekle"
-                onClick={newQuestion}
+                onClick={() => void newQuestion()}
                 className="h-10 w-10 shrink-0 rounded-lg bg-studio-yellow text-studio-bg hover:bg-studio-yellow/90"
               >
                 <Plus />
@@ -370,7 +370,7 @@ function QuestionsPage() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{question.question || "Boş soru"}</span>
                       <span className="mt-0.5 block text-xs text-studio-muted">
-                        Doğru yanıt: {question.correct_answer.toUpperCase()}
+                        {question.option_a.trim() && question.option_b.trim() ? `Doğru yanıt: ${question.correct_answer.toUpperCase()}` : "Taslak — seçenekler eksik"}
                       </span>
                     </span>
                   </Button>
@@ -380,7 +380,7 @@ function QuestionsPage() {
 
             <div className="border-t border-studio-line p-3">
               <Button
-                onClick={newQuestion}
+                onClick={() => void newQuestion()}
                 className={`h-11 w-full rounded-lg font-bold ${draftMode ? "bg-studio-yellow text-studio-bg" : "bg-studio-elevated text-studio-ink hover:bg-studio-line"}`}
               >
                 <Plus /> Yeni Soru
