@@ -460,14 +460,8 @@ function QuestionsPage() {
               />
             </div>
 
-            <div className="mt-5 flex items-center justify-between gap-3 lg:mt-4">
-              <div>
-                <h2 className="font-studio-display text-base text-studio-ink">CEVAP SEÇENEKLERİ</h2>
-                <p className="mt-1 text-xs text-studio-muted">Doğru yanıtı sağdaki işaretten seç.</p>
-              </div>
-              <span className="shrink-0 rounded-full border border-studio-line bg-studio-bg px-3 py-1.5 text-xs font-bold text-studio-muted">
-                A–B zorunlu
-              </span>
+            <div className="mt-5 lg:mt-4">
+              <h2 className="font-studio-display text-base text-studio-ink">CEVAP SEÇENEKLERİ</h2>
             </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:mt-3 lg:gap-2">
@@ -538,9 +532,7 @@ function QuestionsPage() {
               >
                 <CirclePlay /> {starting ? "Hazırlanıyor" : "Seti Sun"}
               </Button>
-              <p className="text-xs font-medium text-studio-muted sm:col-start-2 sm:text-right">
-                {draftMode ? "Yeni soru kaydedildiğinde sete eklenecek." : "Bu soru set içinde kayıtlı."}
-              </p>
+              <span aria-hidden className="hidden sm:block" />
             </div>
           </div>
         </section>
