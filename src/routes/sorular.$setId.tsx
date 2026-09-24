@@ -141,9 +141,13 @@ function QuestionsPage() {
     setDraftMode(false);
   };
 
-  const newQuestion = () => {
+  const newQuestion = async () => {
     setError(null);
     setNotice(null);
+    if (JSON.stringify(form) !== lastSavedRef.current && form.question.trim()) {
+      await persist(form, true);
+    }
+    targetRef.current = { draft: true, id: null };
     setSelectedId(null);
     setDraftMode(true);
     setForm({ ...empty });
@@ -157,14 +161,18 @@ function QuestionsPage() {
     const b = snapshot.option_b.trim();
     const c = snapshot.option_c.trim();
     const d = snapshot.option_d.trim();
-    if (!question || !a || !b) {
-      if (!silent) setError(!question ? "Soru metni gerekli" : "İlk iki cevap (A ve B) zorunlu");
+    if (!question) {
+      if (!silent) setError("Soru metni gerekli");
       else setAutoStatus("Taslak — henüz kaydedilmedi");
       return false;
     }
+    if (!silent && (!a || !b)) {
+      setError("İlk iki cevap (A ve B) zorunlu");
+      return false;
+    }
     const filled: Record<string, string> = { A: a, B: b, C: c, D: d };
-    if (!filled[snapshot.correct_answer]) {
-      if (!silent) setError("Doğru cevap olarak dolu bir seçenek seçin");
+    if (!silent && !filled[snapshot.correct_answer]) {
+      setError("Doğru cevap olarak dolu bir seçenek seçin");
       return false;
     }
     if (silent) setAutoStatus("Kaydediliyor...");

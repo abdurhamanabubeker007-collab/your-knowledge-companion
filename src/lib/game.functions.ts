@@ -71,16 +71,21 @@ export const createRoom = createServerFn({ method: "POST" })
   if (input.setId) {
     const { data: qs, error } = await supabase
       .from("questions")
-      .select("id")
+      .select("id, question, option_a, option_b")
       .eq("set_id", input.setId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    questionIds = (qs ?? []).map((q) => q.id);
-    if (!questionIds.length) throw new Error("Bu sette hiç soru yok");
+    questionIds = (qs ?? [])
+      .filter((q) => q.question.trim() && q.option_a.trim() && q.option_b.trim())
+      .map((q) => q.id);
+    if (!questionIds.length) throw new Error("Bu sette tamamlanmış soru yok");
   } else {
-    const { data: questions, error: qErr } = await supabase.from("questions").select("id");
+    const { data: questions, error: qErr } = await supabase
+      .from("questions")
+      .select("id, question, option_a, option_b");
     if (qErr) throw new Error(qErr.message);
     questionIds = (questions ?? [])
+      .filter((q) => q.question.trim() && q.option_a.trim() && q.option_b.trim())
       .map((q) => q.id)
       .sort(() => Math.random() - 0.5)
       .slice(0, QUESTION_COUNT);
